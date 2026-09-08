@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Directory</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="top-nav">
+        <h2>Employee Directory</h2>
+        <div>
+            <a href="/admin/dashboard" class="sub-btn">Back to Dashboard</a>
+            <a href="/logout" style="margin-left: 10px;">Logout</a>
+        </div>
+    </div>
+
+    <div class="page-box">
+
+        <div class="card-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Registered Employees</h3>
+            <a href="/admin/employees/add" class="main-btn" style="text-decoration: none;">+ Add New Employee</a>
+        </div>
+
+        <div class="card-box">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Job Title</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Start Date</th>
+                        <th>Manager</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr>
+                        <td>EMP-{{ emp.id }}</td>
+                        <td>{{ emp.name }}</td>
+                        <td>{{ emp.job_title }}</td>
+                        <td>{{ emp.email }}</td>
+                        <td>{{ emp.phone }}</td>
+                        <td>{{ emp.start_date }}</td>
+                        <td>{{ emp.manager_name }}</td>
+                        <td>{{ emp.status }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8">No employees found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

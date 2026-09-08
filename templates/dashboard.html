@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="top-nav">
+        <h2>Employee Portal</h2>
+        <div>
+            <span>Welcome, <strong>{{ user.name }}</strong></span>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="page-box">
+        
+        <!-- My Details Card -->
+        <div class="card-box">
+            <h3>My Details</h3>
+            <p><strong>Job Title:</strong> {{ user.job_title }}</p>
+            <p><strong>Phone:</strong> {{ user.phone }}</p>
+            <p><strong>Start Date:</strong> {{ user.start_date }}</p>
+            <p><strong>Manager:</strong> {{ user.manager_name }}</p>
+        </div>
+
+        <!-- Request Time Off Card -->
+        <div class="card-box">
+            <h3>Request Time Off</h3>
+            <form action="/apply-leave" method="POST">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+
+                <div class="form-group">
+                    <label>Leave Type:</label>
+                    <select name="leave_type" class="form-input" required>
+                        <option value="Vacation">Vacation</option>
+                        <option value="Sick Leave">Sick Leave</option>
+                        <option value="Casual Leave">Casual Leave</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Start Date:</label>
+                    <input type="date" name="start_date" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>End Date:</label>
+                    <input type="date" name="end_date" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Reason:</label>
+                    <textarea name="reason" class="form-input" rows="3" placeholder="Reason..."></textarea>
+                </div>
+
+                <button type="submit" class="main-btn">Submit Leave Request</button>
+            </form>
+        </div>
+
+        <!-- My Leave History Card -->
+        <div class="card-box">
+            <h3>My Leave History</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Dates</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in leave_requests %}
+                    <tr>
+                        <td>{{ req.leave_type }}</td>
+                        <td>{{ req.start_date }} to {{ req.end_date }}</td>
+                        <td>{{ req.days_count }}</td>
+                        <td>{{ req.reason }}</td>
+                        <td>
+                            <span class="tag-{{ req.status | lower }}">{{ req.status }}</span>
+                        </td>
+                        <td>
+                            {% if req.status == 'Pending' %}
+                            <form action="/cancel-leave/{{ req.id }}" method="POST">
+                                <button type="submit" class="danger-btn">Cancel</button>
+                            </form>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="no-data">No leave requests found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

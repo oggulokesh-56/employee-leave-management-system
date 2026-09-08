@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="top-nav">
+        <h2>Admin Portal</h2>
+        <div>
+            <a href="/admin/employees" class="sub-btn">Employee Directory</a>
+            <a href="/logout" style="margin-left: 10px;">Logout</a>
+        </div>
+    </div>
+
+    <div class="page-box">
+
+       <!-- System Statistics Section -->
+<div class="card-box">
+    <h3>System Statistics</h3>
+    <div class="stat-grid">
+        
+        <div class="stat-card">
+            <span class="stat-label">Total Employees</span>
+            <div class="stat-number">{{ total_employees }}</div>
+        </div>
+
+        <div class="stat-card stat-pending">
+            <span class="stat-label">Pending Requests</span>
+            <div class="stat-number">{{ pending_count }}</div>
+        </div>
+
+        <div class="stat-card stat-approved">
+            <span class="stat-label">Approved Leaves</span>
+            <div class="stat-number">{{ approved_count }}</div>
+        </div>
+
+        <div class="stat-card stat-rejected">
+            <span class="stat-label">Rejected Leaves</span>
+            <div class="stat-number">{{ rejected_count }}</div>
+        </div>
+
+      </div>
+  </div>
+
+        <!-- Manage Applications Section -->
+        <div class="card-box">
+            <h3>Employee Leave Requests</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Type</th>
+                        <th>Dates</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in all_leave_requests %}
+                    <tr>
+                        <td><strong>{{ req.employee_name }}</strong></td>
+                        <td>{{ req.leave_type }}</td>
+                        <td>{{ req.start_date }} to {{ req.end_date }}</td>
+                        <td>{{ req.days_count }}</td>
+                        <td>{{ req.reason }}</td>
+                        <td>
+                            <span class="tag-{{ req.status | lower }}">{{ req.status }}</span>
+                        </td>
+                        <td>
+                            {% if req.status == 'Pending' %}
+                            <div style="display: flex; gap: 5px;">
+                                <form action="/admin/leave/{{ req.id }}/approve" method="POST">
+                                    <button type="submit" class="main-btn">Approve</button>
+                                </form>
+                                <form action="/admin/leave/{{ req.id }}/reject" method="POST">
+                                    <button type="submit" class="danger-btn">Reject</button>
+                                </form>
+                            </div>
+                            {% else %}
+                            <span>Done</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7">No leave applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

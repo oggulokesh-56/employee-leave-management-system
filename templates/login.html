@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Leave System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Outer container forces vertical & horizontal centering -->
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h2>System Login</h2>
+
+            {% if error %}
+            <div class="error-msg">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="user@company.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="main-btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
