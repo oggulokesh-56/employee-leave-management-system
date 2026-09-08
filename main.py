@@ -13,10 +13,8 @@ from models import User, Leave
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Standard regex pattern for validating email format
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
-# Ensure database tables exist on startup
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -24,8 +22,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-
-# --- HELPER FUNCTIONS ---
 
 def safe_parse_date(date_str: str):
     """Safely converts a YYYY-MM-DD string into a Python date object."""
@@ -41,7 +37,6 @@ def calc_days(start_date_obj, end_date_obj) -> int:
     return max((end_date_obj - start_date_obj).days + 1, 1)
 
 
-# --- AUTH ROUTES ---
 
 @app.get("/", response_class=HTMLResponse)
 @app.get("/login", response_class=HTMLResponse)
@@ -61,7 +56,6 @@ def do_login(
         clean_email = email.strip()
         clean_password = password.strip()
 
-        # Step 1: Validate email format using Regex
         if not re.match(EMAIL_REGEX, clean_email):
             logger.warning(f"Invalid email format attempted: {clean_email}")
             context = {
@@ -70,15 +64,12 @@ def do_login(
             }
             return templates.TemplateResponse(request=request, name="login.html", context=context)
 
-        # Step 2: Query user from database
         user = db.query(User).filter(User.email == clean_email).first()
 
-        # Step 3: Safely validate user exists and password matches
         if not user or user.password != clean_password:
             context = {"request": request, "error": "Invalid email or password."}
             return templates.TemplateResponse(request=request, name="login.html", context=context)
 
-        # Step 4: Redirect based on role
         if user.role == "Admin":
             return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_302_FOUND)
         else:
@@ -95,8 +86,6 @@ def do_login(
 def logout():
     return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
 
-
-# --- EMPLOYEE ROUTES ---
 
 @app.get("/dashboard/{user_id}", response_class=HTMLResponse)
 def user_dashboard(user_id: int, request: Request, db: Session = Depends(get_db)):
@@ -185,8 +174,6 @@ def cancel_leave(leave_id: int, db: Session = Depends(get_db)):
         
     return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
 
-
-# --- ADMIN ROUTES ---
 
 @app.get("/admin/dashboard", response_class=HTMLResponse)
 def admin_dashboard(request: Request, db: Session = Depends(get_db)):
@@ -329,7 +316,6 @@ def add_employee(
         return templates.TemplateResponse(request=request, name="add_employee.html", context=context)
 
 
-# --- EXCEPTION HANDLER FOR UNCAUGHT EXCEPTIONS ---
 @app.exception_handler(Exception)
 async def custom_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled Exception on {request.url.path}: {exc}", exc_info=True)

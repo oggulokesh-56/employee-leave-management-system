@@ -17,7 +17,6 @@
 
     <div class="page-box">
         
-        <!-- My Details Card -->
         <div class="card-box">
             <h3>My Details</h3>
             <p><strong>Job Title:</strong> {{ user.job_title }}</p>
@@ -26,7 +25,6 @@
             <p><strong>Manager:</strong> {{ user.manager_name }}</p>
         </div>
 
-        <!-- Request Time Off Card -->
         <div class="card-box">
             <h3>Request Time Off</h3>
             <form action="/apply-leave" method="POST">
@@ -60,7 +58,6 @@
             </form>
         </div>
 
-        <!-- My Leave History Card -->
         <div class="card-box">
             <h3>My Leave History</h3>
             <table class="data-table">
