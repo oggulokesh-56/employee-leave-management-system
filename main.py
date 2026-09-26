@@ -7,11 +7,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
+
+from logging_info import setup_logging
+logger = setup_logging()
+
 from database import engine, Base, get_db
 from models import User, Leave
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
